@@ -54,15 +54,8 @@ lbl_qty.pack()
 btn_winner = tk.Button(app, text="Pick a winner!", command=pick_a_winner)
 btn_winner.pack(side="bottom")
 
-txt_list = tk.Text(
-    app,
-    height=10,
-    width=30,
-    wrap="word")
-txt_list.pack(
-    side="bottom",
-    fill="both",
-    expand=True)
+txt_list = tk.Text(app, height=10, width=30, wrap="word")
+txt_list.pack(side="bottom", fill="both", expand=True)
 
 btn_add = tk.Button(app, text="Add to list", command=add_to_list)
 btn_add.pack(side="bottom")
