@@ -72,7 +72,8 @@ def pick_a_winner():
                 chances.append(key)
         winner = random.choice(chances)
         winner_text = "\nThe winner is: " + winner
-        playsound("winner.mp3", 0)
+        if check_sound == 1:
+            playsound("winner.mp3", 0)
         txt_list.insert(tk.END, winner_text)
     except ValueError:
         txt_list.delete(1.0, tk.END)
@@ -86,6 +87,7 @@ def pick_a_winner():
 app = tk.Tk()
 app.title("Raffle Winner")
 app.resizable(False, False)
+check_sound = tk.IntVar()
 
 # Create all the frames to hold UI elements
 frm_name = tk.Frame(app)
@@ -126,8 +128,12 @@ entry_qty = tk.Entry(frm_qty, width=5)
 entry_name.pack()
 entry_qty.pack()
 
+# Set up checkbox for sound
+sound_on_off = tk.Checkbutton(app, text="Sound?", variable=check_sound)
+
 # Pack in order of displayed on app
-btn_winner.pack(side="bottom", padx=5, pady=2)
+sound_on_off.pack(side="bottom", pady=2)
+btn_winner.pack(side="bottom", pady=2)
 frm_file_opts.pack(side="bottom", fill="both", expand=True, padx=5, pady=2)
 frm_clear_delete.pack(side="bottom", fill="both", expand=True, padx=5, pady=2)
 txt_list.pack(side="bottom", fill="both", expand=True)
