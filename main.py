@@ -1,7 +1,9 @@
 import tkinter as tk
+from tkinter import ttk
 import random
 from playsound import playsound
 import json
+from ttkthemes import ThemedTk
 
 # Global variables
 data = {}
@@ -41,6 +43,7 @@ def load_json():
     try:
         with open("output.json", "r") as filename:
             try:
+                txt_list.delete(1.0, tk.END)
                 data = json.load(filename)
                 format_list()
             except json.decoder.JSONDecodeError:
@@ -72,7 +75,7 @@ def pick_a_winner():
                 chances.append(key)
         winner = random.choice(chances)
         winner_text = "\nThe winner is: " + winner
-        if check_sound == 1:
+        if check_sound.get() == 1:
             playsound("winner.mp3", 0)
         txt_list.insert(tk.END, winner_text)
     except ValueError:
@@ -84,62 +87,55 @@ def pick_a_winner():
 
 
 # Set up the app
-app = tk.Tk()
+app = ThemedTk(theme="arc")
 app.title("Raffle Winner")
 app.resizable(False, False)
 check_sound = tk.IntVar()
 
-# Create all the frames to hold UI elements
-frm_name = tk.Frame(app)
-frm_qty = tk.Frame(app)
-frm_file_opts = tk.Frame(app)
-frm_clear_delete = tk.Frame(app)
+# Set up surrounding frame
+frm_app = ttk.Frame(app)
 
 # Set up the labels
-lbl_name = tk.Label(frm_name, text="Colleague")
-lbl_qty = tk.Label(frm_qty, text="Entries")
-
-# Pack labels
-lbl_name.pack()
-lbl_qty.pack()
+lbl_name = ttk.Label(frm_app, text="Colleague")
+lbl_qty = ttk.Label(frm_app, text="Entries")
+lbl_options = ttk.Label(frm_app, text="Options")
 
 # Set up buttons
-btn_add = tk.Button(app, text="Add to list", command=add_to_list)
-btn_clear = tk.Button(frm_clear_delete, text="Clear Entries", command=clear_data)
-btn_delete = tk.Button(frm_clear_delete, text="Delete Entry", command=delete_last)
-btn_save_json = tk.Button(frm_file_opts, text="Save Data", command=save_json)
-btn_load_json = tk.Button(frm_file_opts, text="Load Data", command=load_json)
-btn_winner = tk.Button(app, text="Pick a winner!", command=pick_a_winner)
-
-# Pack all buttons
-btn_clear.pack(side="left", fill="both", expand=True)
-btn_delete.pack(side="left", fill="both", expand=True)
-btn_save_json.pack(side="left", fill="both", expand=True)
-btn_load_json.pack(side="left", fill="both", expand=True)
+btn_add = ttk.Button(frm_app, text="Add to list", command=add_to_list)
+btn_clear = ttk.Button(frm_app, text="Clear Entries", command=clear_data)
+btn_delete = ttk.Button(frm_app, text="Delete Entry", command=delete_last)
+btn_save_json = ttk.Button(frm_app, text="Save Data", command=save_json)
+btn_load_json = ttk.Button(frm_app, text="Load Data", command=load_json)
+btn_winner = ttk.Button(frm_app, text="Pick a winner!", command=pick_a_winner)
 
 # Set up text box
-txt_list = tk.Text(app, height=15, width=25, wrap="word")
+txt_list = tk.Text(frm_app, height=15, width=25, wrap="word", bg="white", fg="black",
+                   insertbackground="black", font=("Arial", 13), borderwidth=1, relief="sunken", highlightthicknes=0)
 
 # Set up entry boxes
-entry_name = tk.Entry(frm_name)
-entry_qty = tk.Entry(frm_qty, width=5)
-
-# Pack entry boxes
-entry_name.pack()
-entry_qty.pack()
+entry_name = ttk.Entry(frm_app, width=15)
+entry_qty = ttk.Entry(frm_app, width=10)
 
 # Set up checkbox for sound
-sound_on_off = tk.Checkbutton(app, text="Sound?", variable=check_sound)
+sound_on_off = ttk.Checkbutton(frm_app, text="Sound?", variable=check_sound)
 
-# Pack in order of displayed on app
-sound_on_off.pack(side="bottom", pady=2)
-btn_winner.pack(side="bottom", pady=2)
-frm_file_opts.pack(side="bottom", fill="both", expand=True, padx=5, pady=2)
-frm_clear_delete.pack(side="bottom", fill="both", expand=True, padx=5, pady=2)
-txt_list.pack(side="bottom", fill="both", expand=True)
-btn_add.pack(side="bottom", padx=5, pady=2)
-frm_name.pack(side="left", fill="both", expand=True, padx=5, pady=2)
-frm_qty.pack(side="left", fill="both", expand=True, padx=5, pady=2)
+# Set up a grid layout
+lbl_name.grid(row=0, column=0, sticky="w", padx=5, pady=5)
+lbl_qty.grid(row=0, column=1, sticky="w", padx=5, pady=5)
+entry_name.grid(row=1, column=0, sticky="w", padx=5, pady=0)
+entry_qty.grid(row=1, column=1, sticky="w", padx=5, pady=0)
+btn_add.grid(row=2, column=0, columnspan=2, padx=5, pady=7)
+txt_list.grid(row=3, rowspan=15, column=0, sticky="w", padx=5, pady=5)
+lbl_options.grid(row=7, column=1, padx=5, pady=0)
+btn_save_json.grid(row=8, column=1, padx=5, pady=1)
+btn_load_json.grid(row=9, column=1, padx=5, pady=1)
+btn_clear.grid(row=10, column=1, padx=5, pady=1)
+btn_delete.grid(row=11, column=1, padx=5, pady=1)
+sound_on_off.grid(row=12, column=1, padx=5, pady=0)
+btn_winner.grid(row=18, column=0, columnspan=2, padx=5, pady=5)
+
+# Pack the frame
+frm_app.pack(fill="both", expand=True)
 
 # Keep the app running until close
 app.mainloop()
